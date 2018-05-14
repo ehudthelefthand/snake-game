@@ -16,6 +16,14 @@
     static sub(v1, v2) {
       return new Vector(v1.x - v2.x, v1.y - v2.y)
     }
+
+    static mult(v, value) {
+      return new Vector(v.x * value, v.y * value)
+    }
+
+    static add(v1, v2) {
+      return new Vector(v1.x + v2.x, v1.y + v2.y)
+    }
   }
 
   class Food {
@@ -37,36 +45,21 @@
   class Snake {
 
     constructor(scale, ctx) {
-      this.x = 0
-      this.y = 0
-
-      this.xspeed = 0
-      this.yspeed = 0
-
-      this.scale = scale
+      this.location = new Vector(0, 0)
+      this.speed = new Vector(1, 0)
+      this.size = scale
       this.ctx = ctx
     }
 
-    dir(x, y) {
-      this.xspeed = x
-      this.yspeed = y
-    }
-
-    eat(food) {
-      if (this.)
-    }
-
-    update() {
-      this.x += this.xspeed * this.scale
-      this.y += this.yspeed * this.scale
-
-      this.x = constraint(this.x, 0, screen.width - this.scale)
-      this.y = constraint(this.y, 0, screen.height - this.scale)
+    update(dt) {
+      this.location = Vector.add(this.location, Vector.mult(this.speed, dt))
+      this.location.x = constraint(this.location.x, 0, screen.width - this.size)
+      this.location.y = constraint(this.location.y, 0, screen.height - this.size)
     }
 
     draw() {
       this.ctx.fillStyle = '#fff'
-      this.ctx.fillRect(this.x, this.y, this.scale, this.scale)
+      this.ctx.fillRect(this.x, this.y, this.size, this.size)
     }
 
   }
@@ -111,7 +104,6 @@
   }
 
   function dist(pos1, pos2) {
-    if (pos1.)
   }
 
   function clearScreen() {
