@@ -28,16 +28,14 @@
 
   class Food {
     constructor(scale, ctx, x, y) {
-      this.scale = scale
+      this.location = new Vector(x, y)
+      this.size = scale
       this.ctx = ctx
-
-      this.x = x
-      this.y = y
     }
 
     draw() {
       ctx.fillStyle = '#ff0077'
-      ctx.fillRect(this.x, this.y, this.scale, this.scale)
+      ctx.fillRect(this.location.x, this.location.y, this.size, this.size)
     }
     
   }
@@ -46,40 +44,44 @@
 
     constructor(scale, ctx) {
       this.location = new Vector(0, 0)
-      this.speed = new Vector(1, 0)
+      this.dir = new Vector(1, 0)
+      this.speed = 100
       this.size = scale
       this.ctx = ctx
     }
 
+    setDir(x, y) {
+      this.dir.x = x
+      this.dir.y = y
+    }
+
     update(dt) {
-      this.location = Vector.add(this.location, Vector.mult(this.speed, dt))
+      this.location = Vector.add(this.location, Vector.mult(this.dir, this.speed * dt))
       this.location.x = constraint(this.location.x, 0, screen.width - this.size)
       this.location.y = constraint(this.location.y, 0, screen.height - this.size)
     }
 
     draw() {
       this.ctx.fillStyle = '#fff'
-      this.ctx.fillRect(this.x, this.y, this.size, this.size)
+      this.ctx.fillRect(this.location.x, this.location.y, this.size, this.size)
     }
 
   }
 
-  const ARROW_UP_KEY = 108
-  const ARROW_DOWN_KEY = 111
-  const ARROW_LEFT_KEY = 107
-  const ARROW_RIGHT_KEY = 59
+  const ARROW_UP_KEY = 38
+  const ARROW_DOWN_KEY = 40
+  const ARROW_LEFT_KEY = 37
+  const ARROW_RIGHT_KEY = 39
 
   let screen = document.getElementById('screen')
   let ctx = screen.getContext('2d')
   let scale = 10;
   let snake = new Snake(scale, ctx)
   let food = createFood()
-  let previousTime;
+  let lastTime, step;
 
   screen.width = 600;
   screen.height = 600;
-
-
 
   function constraint(value, from, to) {
     if (value > to) {
@@ -110,28 +112,34 @@
     ctx.clearRect(0, 0, screen.width, screen.height)
   }
 
-  function draw() {
-    clearScreen()
-    
-    snake.update()
-    snake.draw()
-
-    food.draw()
-
+  function draw(time) {
+    if (lastTime) {
+      let dt = (time - lastTime) / 1000
+      clearScreen()
+      snake.update(dt)
+      snake.draw()
+      food.draw()
+    }
+    lastTime = time
     requestAnimationFrame(draw)
   }
 
-  document.addEventListener('keypress', (event) => {
+  document.onkeydown = (event) => {
+    console.log(event.keyCode)
     if (event.keyCode === ARROW_UP_KEY) {
-      snake.dir(0, 1)
+      snake.setDir(0, -1)
+      event.preventDefault()
     } else if (event.keyCode === ARROW_DOWN_KEY) {
-      snake.dir(0, -1)
+      snake.setDir(0, 1)
+      event.preventDefault()
     } else if (event.keyCode === ARROW_LEFT_KEY) {
-      snake.dir(-1, 0)
+      snake.setDir(-1, 0)
+      event.preventDefault()
     } else if (event.keyCode === ARROW_RIGHT_KEY) {
-      snake.dir(1, 0)
+      snake.setDir(1, 0)
+      event.preventDefault()
     }
-  })
+  }
 
   draw()
 
