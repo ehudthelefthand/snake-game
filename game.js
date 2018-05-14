@@ -64,7 +64,7 @@
     }
 
     function update(dt) {
-      location = add(location, mult(dir, speed * dt))
+      location = addVector(location, multVector(dir, speed * dt))
       location.x = constraint(location.x, 0, screen.width - scale)
       location.y = constraint(location.y, 0, screen.height - scale)
     }
@@ -96,24 +96,22 @@
       draw: draw
     })
   }    
-  
-  
 
-  function sub(v1, v2) {
+  function subVector(v1, v2) {
     return { 
       x: v1.x - v2.x, 
       y: v1.y - v2.y
     }
   }
 
-  function mult(v, value) {
+  function multVector(v, value) {
     return {
       x: v.x * value,
       y: v.y * value
     }
   }
 
-  function add(v1, v2) {
+  function addVector(v1, v2) {
     return { 
       x: v1.x + v2.x, 
       y: v1.y + v2.y
